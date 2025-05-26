@@ -100,7 +100,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
               px-6 py-3 rounded-lg font-noto transition-all duration-200
               ${!storyText.trim()
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                : 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                : 'bg-green-300 hover:bg-green-400 text-gray-800 shadow-lg hover:shadow-xl transform hover:scale-105'
               }
             `}
           >
@@ -114,7 +114,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
                 window.location.reload();
               }
             }}
-            className="px-6 py-3 rounded-lg font-noto bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            className="px-6 py-3 rounded-lg font-noto bg-red-300 hover:bg-red-400 text-gray-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
             처음으로
           </button>

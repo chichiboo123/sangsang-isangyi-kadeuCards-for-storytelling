@@ -16,7 +16,7 @@ interface CardGeneratorProps {
 }
 
 export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip }: CardGeneratorProps) {
-  const [cardCount, setCardCount] = useState(2);
+  const [cardCount, setCardCount] = useState('');
   const [useRealPhotos, setUseRealPhotos] = useState(true);
   const [useIllustrations, setUseIllustrations] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -65,7 +65,8 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
   };
 
   const generateCards = async () => {
-    if (cardCount < 1 || cardCount > 20) {
+    const count = parseInt(cardCount);
+    if (!cardCount || count < 1 || count > 20) {
       toast({
         title: "오류",
         description: "카드 개수는 1-20 사이로 입력해주세요.",
@@ -89,7 +90,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
     
     try {
       // 카드를 미리 생성하되, 이미지는 나중에 로드하도록 수정
-      for (let i = 0; i < cardCount; i++) {
+      for (let i = 0; i < count; i++) {
         newCards.push({
           id: i,
           color: shuffledColors[i % shuffledColors.length],
@@ -102,7 +103,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
       
       toast({
         title: "성공",
-        description: `${cardCount}장의 카드가 생성되었습니다!`
+        description: `${count}장의 카드가 생성되었습니다!`
       });
     } catch (error) {
       console.error('카드 생성 중 오류:', error);
@@ -132,18 +133,16 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
         </h2>
         
         <div className="flex flex-col items-center space-y-6">
-          <div className="flex items-center space-x-4">
-            <label htmlFor="cardCount" className="text-lg font-noto text-gray-700">
-              카드 개수:
-            </label>
+          <div className="flex justify-center">
             <input
               id="cardCount"
               type="number"
               min="1"
               max="20"
               value={cardCount}
-              onChange={(e) => setCardCount(Number(e.target.value))}
-              className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-center font-noto focus:outline-none focus:ring-2 focus:ring-purple-500"
+              onChange={(e) => setCardCount(e.target.value)}
+              placeholder="카드 개수 입력"
+              className="w-32 px-3 py-2 border border-gray-300 rounded-lg text-center font-noto focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
@@ -174,10 +173,10 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
           <div className="flex flex-col space-y-4">
             <button
               onClick={generateCards}
-              disabled={isGenerating || cardCount < 1 || cardCount > 20}
+              disabled={isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 20}
               className={`
                 px-8 py-3 rounded-full font-noto text-lg font-medium transition-all duration-200
-                ${isGenerating 
+                ${isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 20
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                 }
@@ -185,6 +184,22 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
             >
               {isGenerating ? '생성 중...' : '카드 만들기'}
             </button>
+            
+            {cards.length > 0 && (
+              <button
+                onClick={() => {
+                  // 모든 카드를 한 번에 열기
+                  cards.forEach((card) => {
+                    if (!card.flipped && onCardFlip) {
+                      onCardFlip(card.id);
+                    }
+                  });
+                }}
+                className="px-6 py-3 rounded-full font-noto text-lg font-medium bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                한 번에 열기
+              </button>
+            )}
             
 
           </div>

@@ -48,13 +48,47 @@ export default function Home() {
   };
 
   const getRandomImage = async (): Promise<string> => {
-    // 실물사진과 일러스트 중 랜덤 선택
-    const useReal = Math.random() > 0.5;
+    // 카드 생성기의 설정에 따라 이미지 타입 결정
+    const cardGenerator = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    const useRealPhotos = document.querySelector('input[type="checkbox"]:nth-of-type(1)') as HTMLInputElement;
+    const useIllustrations = document.querySelector('input[type="checkbox"]:nth-of-type(2)') as HTMLInputElement;
     
-    if (useReal) {
+    const realPhotosChecked = useRealPhotos?.checked ?? true;
+    const illustrationsChecked = useIllustrations?.checked ?? true;
+    
+    if (realPhotosChecked && illustrationsChecked) {
+      // 둘 다 체크된 경우 랜덤 선택
+      const useReal = Math.random() > 0.5;
+      if (useReal) {
+        const randomId = Math.floor(Math.random() * 1000);
+        return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
+      } else {
+        const illustrations = [
+          '/src/assets/illustration1.png',
+          '/src/assets/illustration2.png',
+          '/src/assets/illustration3.png',
+          '/src/assets/illustration4.png',
+          '/src/assets/illustration5.png',
+          '/src/assets/illustration6.png',
+          '/src/assets/illustration7.png',
+          '/src/assets/illustration8.png',
+          '/src/assets/illustration9.png',
+          '/src/assets/illustration10.png',
+          '/src/assets/illustration11.png',
+          '/src/assets/illustration12.png',
+          '/src/assets/illustration13.png',
+          '/src/assets/illustration14.png',
+          '/src/assets/illustration15.png'
+        ];
+        const randomIndex = Math.floor(Math.random() * illustrations.length);
+        return `${illustrations[randomIndex]}?t=${Date.now()}`;
+      }
+    } else if (realPhotosChecked) {
+      // 실물사진만 선택
       const randomId = Math.floor(Math.random() * 1000);
       return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
     } else {
+      // 일러스트만 선택
       const illustrations = [
         '/src/assets/illustration1.png',
         '/src/assets/illustration2.png',
