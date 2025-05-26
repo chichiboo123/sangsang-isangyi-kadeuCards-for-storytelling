@@ -13,12 +13,24 @@ interface CardGeneratorProps {
   onCardsGenerated: (cards: CardData[]) => void;
   cards?: CardData[];
   onCardFlip?: (id: number) => void;
+  onImageSettingsChange?: (useRealPhotos: boolean, useIllustrations: boolean) => void;
 }
 
-export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip }: CardGeneratorProps) {
+export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip, onImageSettingsChange }: CardGeneratorProps) {
   const [cardCount, setCardCount] = useState('');
   const [useRealPhotos, setUseRealPhotos] = useState(true);
   const [useIllustrations, setUseIllustrations] = useState(true);
+
+  // 설정 변경 시 부모 컴포넌트에 알림
+  const handleRealPhotosChange = (checked: boolean) => {
+    setUseRealPhotos(checked);
+    onImageSettingsChange?.(checked, useIllustrations);
+  };
+
+  const handleIllustrationsChange = (checked: boolean) => {
+    setUseIllustrations(checked);
+    onImageSettingsChange?.(useRealPhotos, checked);
+  };
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
@@ -201,7 +213,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
                 <input
                   type="checkbox"
                   checked={useRealPhotos}
-                  onChange={(e) => setUseRealPhotos(e.target.checked)}
+                  onChange={(e) => handleRealPhotosChange(e.target.checked)}
                   className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
                 />
                 <span className="font-noto text-gray-700">실물사진</span>
@@ -210,7 +222,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
                 <input
                   type="checkbox"
                   checked={useIllustrations}
-                  onChange={(e) => setUseIllustrations(e.target.checked)}
+                  onChange={(e) => handleIllustrationsChange(e.target.checked)}
                   className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
                 />
                 <span className="font-noto text-gray-700">일러스트</span>

@@ -21,6 +21,8 @@ export default function Home() {
   const [cards, setCards] = useState<CardData[]>([]);
   const [showStorySection, setShowStorySection] = useState(false);
   const [usedImages, setUsedImages] = useState(new Set<string>());
+  const [currentUseRealPhotos, setCurrentUseRealPhotos] = useState(true);
+  const [currentUseIllustrations, setCurrentUseIllustrations] = useState(true);
   const flippedCards = cards.filter(card => card.flipped);
 
   const handleCardFlip = async (id: number) => {
@@ -126,26 +128,26 @@ export default function Home() {
   };
 
   const getRandomImage = async (usedImages: Set<string>): Promise<string> => {
-    // 카드 생성기의 설정에 따라 이미지 타입 결정
-    const useRealPhotos = document.querySelector('input[type="checkbox"]:nth-of-type(1)') as HTMLInputElement;
-    const useIllustrations = document.querySelector('input[type="checkbox"]:nth-of-type(2)') as HTMLInputElement;
-    
-    const realPhotosChecked = useRealPhotos?.checked ?? true;
-    const illustrationsChecked = useIllustrations?.checked ?? true;
+    // 현재 설정된 이미지 타입 사용
+    console.log('현재 설정:', { currentUseRealPhotos, currentUseIllustrations });
     
     // 규칙 적용: 실물사진만 체크되면 picsum만, 일러스트만 체크되면 업로드 이미지만, 둘 다 체크되면 랜덤
-    if (realPhotosChecked && !illustrationsChecked) {
+    if (currentUseRealPhotos && !currentUseIllustrations) {
       // 실물사진만 체크된 경우: picsum 이미지만
+      console.log('실물사진만 선택됨');
       return getPicsumImage(usedImages);
-    } else if (!realPhotosChecked && illustrationsChecked) {
+    } else if (!currentUseRealPhotos && currentUseIllustrations) {
       // 일러스트만 체크된 경우: 업로드한 이미지만
+      console.log('일러스트만 선택됨');
       return getIllustrationImage(usedImages);
-    } else if (realPhotosChecked && illustrationsChecked) {
+    } else if (currentUseRealPhotos && currentUseIllustrations) {
       // 둘 다 체크된 경우: 랜덤하게 섞여서
       const useReal = Math.random() > 0.5;
+      console.log('둘 다 선택됨, 랜덤 선택:', useReal ? 'picsum' : 'illustration');
       return useReal ? getPicsumImage(usedImages) : getIllustrationImage(usedImages);
     } else {
       // 아무것도 체크되지 않은 경우 (기본값으로 일러스트)
+      console.log('기본값: 일러스트');
       return getIllustrationImage(usedImages);
     }
   };
@@ -155,6 +157,12 @@ export default function Home() {
     setShowStorySection(true);
     // 새로운 카드가 생성되면 사용된 이미지 목록 초기화
     setUsedImages(new Set<string>());
+  };
+
+  const handleImageSettingsChange = (useRealPhotos: boolean, useIllustrations: boolean) => {
+    setCurrentUseRealPhotos(useRealPhotos);
+    setCurrentUseIllustrations(useIllustrations);
+    console.log('이미지 설정 변경:', { useRealPhotos, useIllustrations });
   };
 
   const resetCards = () => {
@@ -202,6 +210,7 @@ export default function Home() {
           onCardsGenerated={handleCardsGenerated}
           cards={cards}
           onCardFlip={handleCardFlip}
+          onImageSettingsChange={handleImageSettingsChange}
         />
         
 
