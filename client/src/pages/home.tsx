@@ -67,66 +67,13 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 max-w-6xl">
-        <CardGenerator onCardsGenerated={handleCardsGenerated} />
+        <CardGenerator 
+          onCardsGenerated={handleCardsGenerated}
+          cards={cards}
+          onCardFlip={handleCardFlip}
+        />
         
-        {/* Card Display Section */}
-        {cards.length > 0 && (
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-do-hyeon text-gray-800">생성된 카드들</h2>
-              <button
-                onClick={resetCards}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-noto transition-colors duration-200"
-              >
-                처음으로
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
-              {cards.map((card) => (
-                <div key={card.id} className="relative">
-                  <div
-                    onClick={() => handleCardFlip(card.id)}
-                    className={`
-                      w-full aspect-[3/4] rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 transform-gpu
-                      ${card.flipped ? 'rotate-y-180' : ''}
-                    `}
-                    style={{
-                      background: card.flipped ? '#ffffff' : `linear-gradient(135deg, ${card.color}, ${adjustBrightness(card.color, -10)})`
-                    }}
-                  >
-                    {card.flipped ? (
-                      <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg">
-                        {card.imageUrl ? (
-                          <img
-                            src={card.imageUrl}
-                            className="w-full h-full object-cover"
-                            alt="Story card"
-                            onError={(e) => {
-                              console.error('Image failed to load:', card.imageUrl);
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <div className="text-center">
-                              <div className="text-2xl mb-2">❌</div>
-                              <div className="text-xs font-noto">이미지 없음</div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center rounded-2xl">
-                        <div className="text-xs font-noto text-gray-700 opacity-70">클릭해서 뒤집기</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
 
         {showStorySection && (
           <div id="story-section">
@@ -153,17 +100,25 @@ export default function Home() {
           </div>
           
           <div className="border-t border-gray-200 pt-4">
-            <p className="font-do-hyeon text-lg text-gray-700">
-              created by.{' '}
-              <a
-                href="https://litt.ly/chichiboo"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-purple-500 hover:text-blue-500 transition-colors duration-200 underline"
+            <div className="flex flex-col items-center space-y-4">
+              <button
+                onClick={resetCards}
+                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-noto transition-colors duration-200 shadow-lg"
               >
-                교육뮤지컬 꿈꾸는 치수쌤
-              </a>
-            </p>
+                처음으로
+              </button>
+              <p className="font-do-hyeon text-lg text-gray-700">
+                created by.{' '}
+                <a
+                  href="https://litt.ly/chichiboo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-500 hover:text-blue-500 transition-colors duration-200 underline"
+                >
+                  교육뮤지컬 꿈꾸는 치수쌤
+                </a>
+              </p>
+            </div>
           </div>
           
           {/* Little Prince inspired decoration */}
