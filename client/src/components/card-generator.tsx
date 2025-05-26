@@ -98,7 +98,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
     const selectedImage = sourceList[randomIndex];
     
     usedImages.add(selectedImage);
-    return `${selectedImage}?t=${Date.now()}`;
+    return selectedImage;
   };
 
   const getRandomImage = async (usedImages: Set<string>): Promise<string> => {

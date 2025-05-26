@@ -75,45 +75,12 @@ export default function Home() {
   };
 
   const getIllustrationImage = (usedImages: Set<string>): string => {
-    const illustrations = [
-      '/src/assets/illustration1.png',
-      '/src/assets/illustration2.png',
-      '/src/assets/illustration3.png',
-      '/src/assets/illustration4.png',
-      '/src/assets/illustration5.png',
-      '/src/assets/illustration6.png',
-      '/src/assets/illustration7.png',
-      '/src/assets/illustration8.png',
-      '/src/assets/illustration9.png',
-      '/src/assets/illustration10.png',
-      '/src/assets/illustration11.png',
-      '/src/assets/illustration12.png',
-      '/src/assets/illustration13.png',
-      '/src/assets/illustration14.png',
-      '/src/assets/illustration15.png',
-      '/src/assets/illustration16.png',
-      '/src/assets/illustration17.png',
-      '/src/assets/illustration18.png',
-      '/src/assets/illustration19.png',
-      '/src/assets/illustration20.png',
-      '/src/assets/illustration21.png',
-      '/src/assets/illustration22.png',
-      '/src/assets/illustration23.png',
-      '/src/assets/illustration24.png',
-      '/src/assets/illustration25.png',
-      '/src/assets/illustration26.png',
-      '/src/assets/illustration27.png',
-      '/src/assets/illustration28.png',
-      '/src/assets/illustration29.png',
-      '/src/assets/illustration30.png',
-      '/src/assets/illustration31.png',
-      '/src/assets/illustration32.png',
-      '/src/assets/illustration33.png',
-      '/src/assets/illustration34.png',
-      '/src/assets/illustration35.png',
-      '/src/assets/illustration36.png',
-      '/src/assets/illustration37.png'
-    ];
+    // 일러스트 이미지들을 동적으로 import
+  const getIllustrationUrl = (index: number): string => {
+    return new URL(`../assets/illustration${index}.png`, import.meta.url).href;
+  };
+
+  const illustrations = Array.from({ length: 37 }, (_, i) => getIllustrationUrl(i + 1));
     
     // 사용되지 않은 일러스트만 필터링
     const availableIllustrations = illustrations.filter(img => !usedImages.has(img));
@@ -124,7 +91,7 @@ export default function Home() {
     const selectedImage = sourceList[randomIndex];
     
     usedImages.add(selectedImage);
-    return `${selectedImage}?t=${Date.now()}`;
+    return selectedImage;
   };
 
   const getRandomImage = async (usedImages: Set<string>): Promise<string> => {
