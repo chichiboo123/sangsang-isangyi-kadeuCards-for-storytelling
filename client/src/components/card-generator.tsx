@@ -160,11 +160,6 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
       }
 
       onCardsGenerated(newCards);
-      
-      toast({
-        title: "성공",
-        description: `${count}장의 카드가 생성되었습니다!`
-      });
     } catch (error) {
       console.error('카드 생성 중 오류:', error);
       toast({
