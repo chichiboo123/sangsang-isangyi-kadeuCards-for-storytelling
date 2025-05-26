@@ -30,9 +30,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
 
   const emojis = ['🌸', '🌊', '🌿', '☀️', '🌙', '⭐', '🦋', '🌺', '🍃', '✨'];
 
-  useEffect(() => {
-    generateCards();
-  }, []);
+  // Remove automatic card generation on load
 
   useEffect(() => {
     onCardsGenerated(cards.filter(card => card.flipped));
