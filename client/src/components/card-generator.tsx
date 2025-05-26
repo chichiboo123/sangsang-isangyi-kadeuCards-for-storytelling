@@ -22,12 +22,21 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
-  const getPicsumImage = (): string => {
-    const randomId = Math.floor(Math.random() * 1000);
-    return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
+  const getPicsumImage = (usedImages: Set<string>): string => {
+    let randomId: number;
+    let imageUrl: string;
+    
+    // 중복되지 않는 이미지 ID 찾기
+    do {
+      randomId = Math.floor(Math.random() * 1000);
+      imageUrl = `https://picsum.photos/200/300?random=${randomId}`;
+    } while (usedImages.has(imageUrl) && usedImages.size < 1000);
+    
+    usedImages.add(imageUrl);
+    return `${imageUrl}&t=${Date.now()}`;
   };
 
-  const getIllustrationImage = (): string => {
+  const getIllustrationImage = (usedImages: Set<string>): string => {
     const illustrations = [
       '/src/assets/illustration1.png',
       '/src/assets/illustration2.png', 
@@ -43,33 +52,54 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
       '/src/assets/illustration12.png',
       '/src/assets/illustration13.png',
       '/src/assets/illustration14.png',
-      '/src/assets/illustration15.png'
+      '/src/assets/illustration15.png',
+      '/src/assets/illustration16.png',
+      '/src/assets/illustration17.png',
+      '/src/assets/illustration18.png',
+      '/src/assets/illustration19.png',
+      '/src/assets/illustration20.png',
+      '/src/assets/illustration21.png',
+      '/src/assets/illustration22.png',
+      '/src/assets/illustration23.png',
+      '/src/assets/illustration24.png',
+      '/src/assets/illustration25.png',
+      '/src/assets/illustration26.png',
+      '/src/assets/illustration27.png'
     ];
-    const randomIndex = Math.floor(Math.random() * illustrations.length);
-    return `${illustrations[randomIndex]}?t=${Date.now()}`;
+    
+    // 사용되지 않은 일러스트만 필터링
+    const availableIllustrations = illustrations.filter(img => !usedImages.has(img));
+    
+    // 사용 가능한 일러스트가 없다면 전체 목록에서 선택
+    const sourceList = availableIllustrations.length > 0 ? availableIllustrations : illustrations;
+    const randomIndex = Math.floor(Math.random() * sourceList.length);
+    const selectedImage = sourceList[randomIndex];
+    
+    usedImages.add(selectedImage);
+    return `${selectedImage}?t=${Date.now()}`;
   };
 
-  const getRandomImage = async (): Promise<string> => {
+  const getRandomImage = async (usedImages: Set<string>): Promise<string> => {
     if (!useRealPhotos && !useIllustrations) {
       throw new Error('이미지 타입을 최소 하나는 선택해주세요.');
     }
 
     if (useRealPhotos && useIllustrations) {
       const useReal = Math.random() > 0.5;
-      return useReal ? getPicsumImage() : getIllustrationImage();
+      return useReal ? getPicsumImage(usedImages) : getIllustrationImage(usedImages);
     } else if (useRealPhotos) {
-      return getPicsumImage();
+      return getPicsumImage(usedImages);
     } else {
-      return getIllustrationImage();
+      return getIllustrationImage(usedImages);
     }
   };
 
   const generateCards = async () => {
     const count = parseInt(cardCount);
-    if (!cardCount || count < 1 || count > 20) {
+    if (!cardCount || count < 1 || count > 30) {
       toast({
         title: "오류",
-        description: "카드 개수는 1-20 사이로 입력해주세요.",
+        description: "카드 개수는 1-30 사이로 입력해주세요.",
         variant: "destructive"
       });
       return;
@@ -87,6 +117,7 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
     setIsGenerating(true);
     const shuffledColors = getShuffledPastelColors();
     const newCards: CardData[] = [];
+    const usedImages = new Set<string>(); // 중복 방지를 위한 Set
     
     try {
       // 카드를 미리 생성하되, 이미지는 나중에 로드하도록 수정
@@ -138,10 +169,10 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
               id="cardCount"
               type="number"
               min="1"
-              max="20"
+              max="30"
               value={cardCount}
               onChange={(e) => setCardCount(e.target.value)}
-              placeholder="카드 개수 입력"
+              placeholder="1~30"
               className="w-32 px-3 py-2 border border-gray-300 rounded-lg text-center font-noto focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
@@ -170,13 +201,13 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
             </div>
           </div>
 
-          <div className="flex flex-col space-y-4">
+          <div className="flex justify-center space-x-4">
             <button
               onClick={generateCards}
-              disabled={isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 20}
+              disabled={isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 30}
               className={`
                 px-8 py-3 rounded-full font-noto text-lg font-medium transition-all duration-200
-                ${isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 20
+                ${isGenerating || !cardCount || parseInt(cardCount) < 1 || parseInt(cardCount) > 30
                   ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                 }
@@ -200,8 +231,6 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
                 한 번에 열기
               </button>
             )}
-            
-
           </div>
         </div>
       </div>

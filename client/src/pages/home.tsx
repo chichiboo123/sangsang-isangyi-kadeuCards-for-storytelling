@@ -20,6 +20,7 @@ interface CardData {
 export default function Home() {
   const [cards, setCards] = useState<CardData[]>([]);
   const [showStorySection, setShowStorySection] = useState(false);
+  const [usedImages, setUsedImages] = useState(new Set<string>());
   const flippedCards = cards.filter(card => card.flipped);
 
   const handleCardFlip = async (id: number) => {
@@ -43,8 +44,8 @@ export default function Home() {
       // 이미지 URL이 없는 경우에만 이미지 로드
       if (cardToFlip && !cardToFlip.imageUrl) {
         try {
-          // 빠른 이미지 로딩을 위해 즉시 실행
-          const imageUrl = await getRandomImage();
+          // 중복 방지를 위해 usedImages Set 전달
+          const imageUrl = await getRandomImage(usedImages);
           setCards(prevCards =>
             prevCards.map(card =>
               card.id === id ? { ...card, imageUrl: imageUrl } : card
@@ -57,9 +58,65 @@ export default function Home() {
     }
   };
 
-  const getRandomImage = async (): Promise<string> => {
+  const getPicsumImage = (usedImages: Set<string>): string => {
+    let randomId: number;
+    let imageUrl: string;
+    
+    // 중복되지 않는 이미지 ID 찾기
+    do {
+      randomId = Math.floor(Math.random() * 1000);
+      imageUrl = `https://picsum.photos/200/300?random=${randomId}`;
+    } while (usedImages.has(imageUrl) && usedImages.size < 1000);
+    
+    usedImages.add(imageUrl);
+    return `${imageUrl}&t=${Date.now()}`;
+  };
+
+  const getIllustrationImage = (usedImages: Set<string>): string => {
+    const illustrations = [
+      '/src/assets/illustration1.png',
+      '/src/assets/illustration2.png',
+      '/src/assets/illustration3.png',
+      '/src/assets/illustration4.png',
+      '/src/assets/illustration5.png',
+      '/src/assets/illustration6.png',
+      '/src/assets/illustration7.png',
+      '/src/assets/illustration8.png',
+      '/src/assets/illustration9.png',
+      '/src/assets/illustration10.png',
+      '/src/assets/illustration11.png',
+      '/src/assets/illustration12.png',
+      '/src/assets/illustration13.png',
+      '/src/assets/illustration14.png',
+      '/src/assets/illustration15.png',
+      '/src/assets/illustration16.png',
+      '/src/assets/illustration17.png',
+      '/src/assets/illustration18.png',
+      '/src/assets/illustration19.png',
+      '/src/assets/illustration20.png',
+      '/src/assets/illustration21.png',
+      '/src/assets/illustration22.png',
+      '/src/assets/illustration23.png',
+      '/src/assets/illustration24.png',
+      '/src/assets/illustration25.png',
+      '/src/assets/illustration26.png',
+      '/src/assets/illustration27.png'
+    ];
+    
+    // 사용되지 않은 일러스트만 필터링
+    const availableIllustrations = illustrations.filter(img => !usedImages.has(img));
+    
+    // 사용 가능한 일러스트가 없다면 전체 목록에서 선택
+    const sourceList = availableIllustrations.length > 0 ? availableIllustrations : illustrations;
+    const randomIndex = Math.floor(Math.random() * sourceList.length);
+    const selectedImage = sourceList[randomIndex];
+    
+    usedImages.add(selectedImage);
+    return `${selectedImage}?t=${Date.now()}`;
+  };
+
+  const getRandomImage = async (usedImages: Set<string>): Promise<string> => {
     // 카드 생성기의 설정에 따라 이미지 타입 결정
-    const cardGenerator = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
     const useRealPhotos = document.querySelector('input[type="checkbox"]:nth-of-type(1)') as HTMLInputElement;
     const useIllustrations = document.querySelector('input[type="checkbox"]:nth-of-type(2)') as HTMLInputElement;
     
@@ -69,61 +126,21 @@ export default function Home() {
     if (realPhotosChecked && illustrationsChecked) {
       // 둘 다 체크된 경우 랜덤 선택
       const useReal = Math.random() > 0.5;
-      if (useReal) {
-        const randomId = Math.floor(Math.random() * 1000);
-        return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
-      } else {
-        const illustrations = [
-          '/src/assets/illustration1.png',
-          '/src/assets/illustration2.png',
-          '/src/assets/illustration3.png',
-          '/src/assets/illustration4.png',
-          '/src/assets/illustration5.png',
-          '/src/assets/illustration6.png',
-          '/src/assets/illustration7.png',
-          '/src/assets/illustration8.png',
-          '/src/assets/illustration9.png',
-          '/src/assets/illustration10.png',
-          '/src/assets/illustration11.png',
-          '/src/assets/illustration12.png',
-          '/src/assets/illustration13.png',
-          '/src/assets/illustration14.png',
-          '/src/assets/illustration15.png'
-        ];
-        const randomIndex = Math.floor(Math.random() * illustrations.length);
-        return `${illustrations[randomIndex]}?t=${Date.now()}`;
-      }
+      return useReal ? getPicsumImage(usedImages) : getIllustrationImage(usedImages);
     } else if (realPhotosChecked) {
       // 실물사진만 선택
-      const randomId = Math.floor(Math.random() * 1000);
-      return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
+      return getPicsumImage(usedImages);
     } else {
       // 일러스트만 선택
-      const illustrations = [
-        '/src/assets/illustration1.png',
-        '/src/assets/illustration2.png',
-        '/src/assets/illustration3.png',
-        '/src/assets/illustration4.png',
-        '/src/assets/illustration5.png',
-        '/src/assets/illustration6.png',
-        '/src/assets/illustration7.png',
-        '/src/assets/illustration8.png',
-        '/src/assets/illustration9.png',
-        '/src/assets/illustration10.png',
-        '/src/assets/illustration11.png',
-        '/src/assets/illustration12.png',
-        '/src/assets/illustration13.png',
-        '/src/assets/illustration14.png',
-        '/src/assets/illustration15.png'
-      ];
-      const randomIndex = Math.floor(Math.random() * illustrations.length);
-      return `${illustrations[randomIndex]}?t=${Date.now()}`;
+      return getIllustrationImage(usedImages);
     }
   };
 
   const handleCardsGenerated = (newCards: CardData[]) => {
     setCards(newCards);
     setShowStorySection(true);
+    // 새로운 카드가 생성되면 사용된 이미지 목록 초기화
+    setUsedImages(new Set<string>());
   };
 
   const resetCards = () => {
@@ -131,6 +148,7 @@ export default function Home() {
     if (confirmed) {
       setCards([]);
       setShowStorySection(false);
+      setUsedImages(new Set<string>());
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
