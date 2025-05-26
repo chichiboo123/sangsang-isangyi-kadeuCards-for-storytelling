@@ -128,3 +128,35 @@ export function downloadTxtFile(storyText: string): void {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export async function downloadJpgScreenshot(): Promise<void> {
+  const { default: html2canvas } = await import('html2canvas');
+  
+  // 스토리 작성 영역 찾기
+  const storyElement = document.querySelector('.story-section') as HTMLElement;
+  if (!storyElement) {
+    throw new Error('스토리 영역을 찾을 수 없습니다.');
+  }
+
+  // 버튼들 임시로 숨기기
+  const buttons = storyElement.querySelectorAll('.download-buttons') as NodeListOf<HTMLElement>;
+  buttons.forEach(btn => btn.style.display = 'none');
+
+  try {
+    const canvas = await html2canvas(storyElement, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true
+    });
+
+    // 이미지 다운로드
+    const link = document.createElement('a');
+    link.download = `내가_쓴_이야기_${new Date().toISOString().slice(0, 10)}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.9);
+    link.click();
+  } finally {
+    // 버튼들 다시 보이기
+    buttons.forEach(btn => btn.style.display = '');
+  }
+}
