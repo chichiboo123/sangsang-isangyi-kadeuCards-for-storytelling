@@ -219,8 +219,8 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
       </section>
 
       {/* Cards Container */}
-      {cards.length > 0 && (
-        <section className="mb-8">
+      <section className="mb-8">
+        {cards.length > 0 && (
           <div className="flex justify-center">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 max-w-6xl">
               {cards.map((card) => (
@@ -237,8 +237,8 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
               ))}
             </div>
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </>
   );
 }
