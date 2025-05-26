@@ -17,14 +17,14 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     
-    // Use default font to avoid font loading issues
-    pdf.setFont('helvetica', 'bold');
+    // Use a simpler approach for Korean text - fallback to unicode support
+    pdf.setFont('helvetica', 'normal');
+    
     pdf.setFontSize(20);
     pdf.text('상상 이상의 카드 - 나만의 이야기', 105, 20, { align: 'center' });
     
     // Add date
     pdf.setFontSize(12);
-    pdf.setFont('helvetica', 'normal');
     pdf.text(`작성일: ${new Date().toLocaleDateString('ko-KR')}`, 105, 30, { align: 'center' });
 
     let yPosition = 50;
@@ -32,12 +32,11 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     // Add flipped cards section
     if (flippedCards.length > 0) {
       pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
+      pdf.setFont('NotoSansKR', 'normal');
       pdf.text('뽑은 카드들:', 20, yPosition);
       yPosition += 10;
 
       pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
       pdf.text(`총 ${flippedCards.length}장의 카드를 뽑았습니다.`, 20, yPosition);
       yPosition += 20;
 
@@ -85,12 +84,11 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
 
     // Add story
     pdf.setFontSize(16);
-    pdf.setFont('helvetica', 'bold');
+    pdf.setFont('NotoSansKR', 'normal');
     pdf.text('내가 쓴 이야기:', 20, yPosition);
     yPosition += 10;
 
     pdf.setFontSize(12);
-    pdf.setFont('helvetica', 'normal');
     
     // Split text into lines for proper PDF formatting
     const lines = pdf.splitTextToSize(storyText, 170);
@@ -108,7 +106,7 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
       pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'normal');
+      pdf.setFont('NotoSansKR', 'normal');
       pdf.text('created by. 교육뮤지컬 꿈꾸는 치수쌤', 105, 285, { align: 'center' });
     }
 

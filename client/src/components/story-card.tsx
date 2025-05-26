@@ -57,7 +57,6 @@ export default function StoryCard({
             }}
           >
             <div className="text-center flex flex-col items-center justify-center w-full h-full p-4">
-              <div className="text-4xl mb-2">{emoji}</div>
               <div className="text-xs font-noto text-gray-700 opacity-70">클릭해서 뒤집기</div>
             </div>
           </div>

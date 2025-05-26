@@ -73,7 +73,19 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
     const illustrations = [
       '/src/assets/illustration1.png',
       '/src/assets/illustration2.png',
-      '/src/assets/illustration3.png'
+      '/src/assets/illustration3.png',
+      '/src/assets/illustration4.png',
+      '/src/assets/illustration5.png',
+      '/src/assets/illustration6.png',
+      '/src/assets/illustration7.png',
+      '/src/assets/illustration8.png',
+      '/src/assets/illustration9.png',
+      '/src/assets/illustration10.png',
+      '/src/assets/illustration11.png',
+      '/src/assets/illustration12.png',
+      '/src/assets/illustration13.png',
+      '/src/assets/illustration14.png',
+      '/src/assets/illustration15.png'
     ];
     const randomIndex = Math.floor(Math.random() * illustrations.length);
     return `${illustrations[randomIndex]}?t=${Date.now()}`;
