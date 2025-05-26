@@ -27,3 +27,32 @@ export function adjustBrightness(hex: string, percent: number): string {
     (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
     (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
 }
+// Pastel color palette for cards
+const pastelColors = [
+  '#FFB3BA', // Pastel Pink
+  '#FFDFBA', // Pastel Orange
+  '#FFFFBA', // Pastel Yellow
+  '#BAFFC9', // Pastel Green
+  '#BAE1FF', // Pastel Blue
+  '#E6BAFF', // Pastel Purple
+  '#FFB3E6', // Pastel Magenta
+  '#B3FFE6', // Pastel Mint
+  '#FFE6B3', // Pastel Peach
+  '#D4BAFF', // Pastel Lavender
+  '#FFBAB3', // Pastel Coral
+  '#B3FFFF', // Pastel Cyan
+  '#FFE6FF', // Pastel Rose
+  '#B3FFB3', // Pastel Lime
+  '#FFCCB3', // Pastel Apricot
+];
+
+export function getShuffledPastelColors(): string[] {
+  const shuffled = [...pastelColors];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+export { pastelColors };

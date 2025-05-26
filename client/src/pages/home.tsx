@@ -28,7 +28,7 @@ export default function Home() {
           <div className="text-lg mx-2">✨</div>
           <div className="text-2xl">⭐</div>
         </div>
-        
+
         <h1 className="text-4xl md:text-6xl font-do-hyeon text-gray-800 drop-shadow-lg mb-2">
           상상 이상의 카드
         </h1>
