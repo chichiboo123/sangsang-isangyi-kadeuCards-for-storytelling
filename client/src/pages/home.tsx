@@ -23,26 +23,36 @@ export default function Home() {
   const flippedCards = cards.filter(card => card.flipped);
 
   const handleCardFlip = async (id: number) => {
-    // 카드를 먼저 뒤집기
-    setCards(prevCards =>
-      prevCards.map(card =>
-        card.id === id ? { ...card, flipped: true } : card
-      )
-    );
-
-    // 이미지 URL이 없는 경우에만 이미지 로드
     const cardToFlip = cards.find(card => card.id === id);
-    if (cardToFlip && !cardToFlip.imageUrl) {
-      try {
-        // 빠른 이미지 로딩을 위해 즉시 실행
-        const imageUrl = await getRandomImage();
-        setCards(prevCards =>
-          prevCards.map(card =>
-            card.id === id ? { ...card, imageUrl: imageUrl } : card
-          )
-        );
-      } catch (error) {
-        console.error('이미지 로딩 실패:', error);
+    
+    if (cardToFlip?.flipped) {
+      // 이미 뒤집힌 카드를 클릭하면 다시 뒤집기
+      setCards(prevCards =>
+        prevCards.map(card =>
+          card.id === id ? { ...card, flipped: false } : card
+        )
+      );
+    } else {
+      // 카드를 먼저 뒤집기
+      setCards(prevCards =>
+        prevCards.map(card =>
+          card.id === id ? { ...card, flipped: true } : card
+        )
+      );
+
+      // 이미지 URL이 없는 경우에만 이미지 로드
+      if (cardToFlip && !cardToFlip.imageUrl) {
+        try {
+          // 빠른 이미지 로딩을 위해 즉시 실행
+          const imageUrl = await getRandomImage();
+          setCards(prevCards =>
+            prevCards.map(card =>
+              card.id === id ? { ...card, imageUrl: imageUrl } : card
+            )
+          );
+        } catch (error) {
+          console.error('이미지 로딩 실패:', error);
+        }
       }
     }
   };
@@ -125,6 +135,14 @@ export default function Home() {
     }
   };
 
+  const handleRemoveCard = (id: number) => {
+    setCards(prevCards =>
+      prevCards.map(card =>
+        card.id === id ? { ...card, flipped: false } : card
+      )
+    );
+  };
+
   return (
     <div className="bg-gradient-to-br from-pastel-sky via-pastel-yellow to-pastel-purple min-h-screen font-noto">
       {/* Header */}
@@ -158,7 +176,7 @@ export default function Home() {
 
         {showStorySection && (
           <div id="story-section" className="mt-16">
-            <StoryWriter flippedCards={flippedCards} />
+            <StoryWriter flippedCards={flippedCards} onRemoveCard={handleRemoveCard} />
           </div>
         )}
       </main>

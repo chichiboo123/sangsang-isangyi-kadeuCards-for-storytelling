@@ -14,9 +14,10 @@ interface CardData {
 
 interface StoryWriterProps {
   flippedCards: CardData[];
+  onRemoveCard?: (id: number) => void;
 }
 
-export default function StoryWriter({ flippedCards }: StoryWriterProps) {
+export default function StoryWriter({ flippedCards, onRemoveCard }: StoryWriterProps) {
   const [storyText, setStoryText] = useState('');
   const { toast } = useToast();
 
@@ -62,7 +63,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
             {flippedCards.map((card) => (
               <div
                 key={card.id}
-                className="w-16 h-16 rounded-lg shadow-lg overflow-hidden border-2 border-white"
+                className="relative w-16 h-16 rounded-lg shadow-lg overflow-hidden border-2 border-white group"
                 style={{ backgroundColor: card.color }}
               >
                 {card.imageUrl && (
@@ -71,6 +72,16 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
                     className="w-full h-full object-cover"
                     alt="Story card preview"
                   />
+                )}
+                {/* X 버튼 */}
+                {onRemoveCard && (
+                  <button
+                    onClick={() => onRemoveCard(card.id)}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full text-xs font-bold shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                    title="카드 제거"
+                  >
+                    ×
+                  </button>
                 )}
               </div>
             ))}
