@@ -133,15 +133,19 @@ export default function Home() {
     const realPhotosChecked = useRealPhotos?.checked ?? true;
     const illustrationsChecked = useIllustrations?.checked ?? true;
     
-    if (realPhotosChecked && illustrationsChecked) {
-      // 둘 다 체크된 경우 랜덤 선택
+    // 규칙 적용: 실물사진만 체크되면 picsum만, 일러스트만 체크되면 업로드 이미지만, 둘 다 체크되면 랜덤
+    if (realPhotosChecked && !illustrationsChecked) {
+      // 실물사진만 체크된 경우: picsum 이미지만
+      return getPicsumImage(usedImages);
+    } else if (!realPhotosChecked && illustrationsChecked) {
+      // 일러스트만 체크된 경우: 업로드한 이미지만
+      return getIllustrationImage(usedImages);
+    } else if (realPhotosChecked && illustrationsChecked) {
+      // 둘 다 체크된 경우: 랜덤하게 섞여서
       const useReal = Math.random() > 0.5;
       return useReal ? getPicsumImage(usedImages) : getIllustrationImage(usedImages);
-    } else if (realPhotosChecked) {
-      // 실물사진만 선택
-      return getPicsumImage(usedImages);
     } else {
-      // 일러스트만 선택
+      // 아무것도 체크되지 않은 경우 (기본값으로 일러스트)
       return getIllustrationImage(usedImages);
     }
   };

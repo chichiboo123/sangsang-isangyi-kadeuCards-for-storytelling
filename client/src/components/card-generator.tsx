@@ -94,12 +94,19 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
       throw new Error('이미지 타입을 최소 하나는 선택해주세요.');
     }
 
-    if (useRealPhotos && useIllustrations) {
+    // 규칙 적용: 실물사진만 체크되면 picsum만, 일러스트만 체크되면 업로드 이미지만, 둘 다 체크되면 랜덤
+    if (useRealPhotos && !useIllustrations) {
+      // 실물사진만 체크된 경우: picsum 이미지만
+      return getPicsumImage(usedImages);
+    } else if (!useRealPhotos && useIllustrations) {
+      // 일러스트만 체크된 경우: 업로드한 이미지만
+      return getIllustrationImage(usedImages);
+    } else if (useRealPhotos && useIllustrations) {
+      // 둘 다 체크된 경우: 랜덤하게 섞여서
       const useReal = Math.random() > 0.5;
       return useReal ? getPicsumImage(usedImages) : getIllustrationImage(usedImages);
-    } else if (useRealPhotos) {
-      return getPicsumImage(usedImages);
     } else {
+      // 기본값 (일러스트)
       return getIllustrationImage(usedImages);
     }
   };
