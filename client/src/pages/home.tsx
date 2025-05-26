@@ -100,7 +100,10 @@ export default function Home() {
       '/src/assets/illustration24.png',
       '/src/assets/illustration25.png',
       '/src/assets/illustration26.png',
-      '/src/assets/illustration27.png'
+      '/src/assets/illustration27.png',
+      '/src/assets/illustration28.png',
+      '/src/assets/illustration29.png',
+      '/src/assets/illustration30.png'
     ];
     
     // 사용되지 않은 일러스트만 필터링
