@@ -33,14 +33,6 @@ export default function Home() {
   const handleCardsGenerated = (newCards: CardData[]) => {
     setCards(newCards);
     setShowStorySection(true);
-    
-    // Scroll to story section after a brief delay
-    setTimeout(() => {
-      const storySection = document.getElementById('story-section');
-      if (storySection) {
-        storySection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 300);
   };
 
   const resetCards = () => {
