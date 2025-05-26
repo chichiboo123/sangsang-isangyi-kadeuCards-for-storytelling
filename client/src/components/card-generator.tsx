@@ -67,7 +67,14 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
       '/src/assets/illustration27.png',
       '/src/assets/illustration28.png',
       '/src/assets/illustration29.png',
-      '/src/assets/illustration30.png'
+      '/src/assets/illustration30.png',
+      '/src/assets/illustration31.png',
+      '/src/assets/illustration32.png',
+      '/src/assets/illustration33.png',
+      '/src/assets/illustration34.png',
+      '/src/assets/illustration35.png',
+      '/src/assets/illustration36.png',
+      '/src/assets/illustration37.png'
     ];
     
     // 사용되지 않은 일러스트만 필터링
