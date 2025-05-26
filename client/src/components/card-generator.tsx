@@ -38,7 +38,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
 
   const generateCards = () => {
     const count = parseInt(cardCount);
-    if (!cardCount || count < 1 || count > 30) {
+    if (!cardCount || isNaN(count) || count < 1 || count > 30) {
       toast({
         title: "오류",
         description: "카드 개수는 1-30 사이로 입력해주세요.",
@@ -62,6 +62,12 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
     setCards(newCards);
     setFlippedCards(new Set());
     setLoadingCards(new Set());
+    
+    // Show success message
+    toast({
+      title: "카드 생성 완료",
+      description: `${count}장의 카드가 생성되었습니다. 카드를 클릭해서 이미지를 확인해보세요!`,
+    });
   };
 
   const getPicsumImage = (): string => {
