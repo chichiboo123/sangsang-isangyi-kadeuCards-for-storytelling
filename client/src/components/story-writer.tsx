@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { generatePDF, downloadTxtFile } from '@/lib/pdf-utils';
+import { downloadTxtFile } from '@/lib/pdf-utils';
 
 interface CardData {
   id: number;
@@ -18,14 +18,13 @@ interface StoryWriterProps {
 
 export default function StoryWriter({ flippedCards }: StoryWriterProps) {
   const [storyText, setStoryText] = useState('');
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const { toast } = useToast();
 
   const handleDownloadTxt = () => {
     if (!storyText.trim()) {
       toast({
-        title: "알림",
-        description: "먼저 이야기를 작성해주세요.",
+        title: "오류",
+        description: "이야기를 먼저 작성해주세요.",
         variant: "destructive"
       });
       return;
@@ -34,100 +33,81 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
     try {
       downloadTxtFile(storyText);
       toast({
-        title: "다운로드 완료",
-        description: "TXT 파일이 다운로드되었습니다.",
+        title: "성공",
+        description: "TXT 파일이 성공적으로 다운로드되었습니다!"
       });
     } catch (error) {
+      console.error('TXT 다운로드 오류:', error);
       toast({
-        title: "다운로드 실패",
+        title: "오류",
         description: "파일 다운로드 중 오류가 발생했습니다.",
         variant: "destructive"
       });
     }
   };
 
-  const handleDownloadPdf = async () => {
-    if (!storyText.trim()) {
-      toast({
-        title: "알림",
-        description: "먼저 이야기를 작성해주세요.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsGeneratingPdf(true);
-    try {
-      await generatePDF(storyText, flippedCards);
-      toast({
-        title: "다운로드 완료",
-        description: "PDF 파일이 다운로드되었습니다.",
-      });
-    } catch (error) {
-      toast({
-        title: "PDF 생성 실패",
-        description: error instanceof Error ? error.message : "PDF 생성 중 오류가 발생했습니다.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
-
   return (
-    <>
-      <section className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-8 mb-8">
-        <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-6 text-center">
-          이야기 만들기
-        </h2>
-        
+    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-8 mt-8">
+      <h2 className="text-3xl font-do-hyeon text-center text-gray-800 mb-8">
+        이야기 만들기
+      </h2>
+      
+      {flippedCards.length > 0 && (
         <div className="mb-6">
-          <Textarea
-            placeholder="여기에 카드를 보고 떠오른 이야기를 적어보세요... 
+          <p className="text-lg font-noto text-gray-700 mb-4 text-center">
+            뽑은 카드 {flippedCards.length}장을 보고 자유롭게 이야기를 써보세요!
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-3 mb-6">
+            {flippedCards.map((card) => (
+              <div
+                key={card.id}
+                className="w-16 h-16 rounded-lg shadow-lg overflow-hidden border-2 border-white"
+                style={{ backgroundColor: card.color }}
+              >
+                {card.imageUrl && (
+                  <img
+                    src={card.imageUrl}
+                    className="w-full h-full object-cover"
+                    alt="Story card preview"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-어린왕자가 여행하는 동안 만난 사람들처럼, 각 카드가 들려주는 이야기를 상상해보세요. 🌟"
+      <div className="space-y-6">
+        <div>
+          <label htmlFor="story" className="block text-lg font-noto text-gray-700 mb-2">
+            나만의 이야기
+          </label>
+          <Textarea
+            id="story"
             value={storyText}
             onChange={(e) => setStoryText(e.target.value)}
-            className="w-full h-64 md:h-80 p-4 border-2 border-purple-200 rounded-2xl resize-none font-noto text-gray-700 leading-relaxed focus:border-blue-300 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+            placeholder="카드에서 영감을 받아 자유롭게 이야기를 써보세요..."
+            className="min-h-[200px] p-4 text-base font-noto resize-none border-2 border-gray-200 focus:border-purple-500 rounded-lg"
           />
         </div>
 
-        {/* Download Buttons */}
-        <div className="flex flex-col md:flex-row gap-4 justify-center mb-4">
-          <Button
+        <div className="flex justify-center">
+          <button
             onClick={handleDownloadTxt}
-            className="bg-gradient-to-r from-pastel-green to-pastel-yellow hover:from-pastel-yellow hover:to-pastel-green text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+            disabled={!storyText.trim()}
+            className={`
+              px-6 py-3 rounded-lg font-noto transition-all duration-200
+              ${!storyText.trim()
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+              }
+            `}
           >
-            📄 TXT 다운로드
-          </Button>
-          <Button
-            onClick={handleDownloadPdf}
-            disabled={isGeneratingPdf}
-            className="bg-gradient-to-r from-pastel-purple to-pastel-sky hover:from-pastel-sky hover:to-pastel-purple text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isGeneratingPdf ? (
-              <>
-                <div className="animate-spin">🔄</div>
-                PDF 생성중...
-              </>
-            ) : (
-              <>
-                🖼️ PDF 다운로드
-              </>
-            )}
-          </Button>
+            TXT 다운로드
+          </button>
         </div>
-      </section>
-
-      {/* Go to Top Button - Outside the story section */}
-      <div className="flex justify-center mb-8">
-        <Button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="bg-gradient-to-r from-pastel-sky to-pastel-purple hover:from-pastel-purple hover:to-pastel-sky text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
-        >
-          처음으로
-        </Button>
       </div>
-    </>
+    </div>
   );
 }

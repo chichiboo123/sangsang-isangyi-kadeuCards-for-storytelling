@@ -186,27 +186,15 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
               {isGenerating ? '생성 중...' : '카드 만들기'}
             </button>
             
-            {cards.length > 0 && (
-              <button
-                onClick={() => {
-                  const confirmed = window.confirm("모든 내용이 사라집니다. 처음 화면으로 이동하시겠습니까?");
-                  if (confirmed) {
-                    window.location.reload();
-                  }
-                }}
-                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-noto transition-colors duration-200"
-              >
-                처음으로
-              </button>
-            )}
+
           </div>
         </div>
       </div>
 
       {/* Card Display Section */}
       {cards.length > 0 && (
-        <div className="mb-16">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
+        <div className="mb-24">
+          <div className="flex flex-wrap justify-center gap-4">
             {cards.map((card) => (
               <div key={card.id} className="relative">
                 <div

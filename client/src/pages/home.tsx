@@ -123,7 +123,7 @@ export default function Home() {
 
 
         {showStorySection && (
-          <div id="story-section">
+          <div id="story-section" className="mt-16">
             <StoryWriter flippedCards={flippedCards} />
           </div>
         )}
