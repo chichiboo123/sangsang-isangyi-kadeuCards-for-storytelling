@@ -88,12 +88,12 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
     const newCards: CardData[] = [];
     
     try {
+      // 카드를 미리 생성하되, 이미지는 나중에 로드하도록 수정
       for (let i = 0; i < cardCount; i++) {
-        const imageUrl = await getRandomImage();
         newCards.push({
           id: i,
           color: shuffledColors[i % shuffledColors.length],
-          imageUrl: imageUrl,
+          imageUrl: null, // 처음에는 null로 시작
           flipped: false
         });
       }
@@ -171,63 +171,81 @@ export default function CardGenerator({ onCardsGenerated, cards = [], onCardFlip
             </div>
           </div>
 
-          <button
-            onClick={generateCards}
-            disabled={isGenerating || cardCount < 1 || cardCount > 20}
-            className={`
-              px-8 py-3 rounded-full font-noto text-lg font-medium transition-all duration-200
-              ${isGenerating 
-                ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
-              }
-            `}
-          >
-            {isGenerating ? '생성 중...' : '카드 만들기'}
-          </button>
+          <div className="flex flex-col space-y-4">
+            <button
+              onClick={generateCards}
+              disabled={isGenerating || cardCount < 1 || cardCount > 20}
+              className={`
+                px-8 py-3 rounded-full font-noto text-lg font-medium transition-all duration-200
+                ${isGenerating 
+                  ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                  : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                }
+              `}
+            >
+              {isGenerating ? '생성 중...' : '카드 만들기'}
+            </button>
+            
+            {cards.length > 0 && (
+              <button
+                onClick={() => {
+                  const confirmed = window.confirm("모든 내용이 사라집니다. 처음 화면으로 이동하시겠습니까?");
+                  if (confirmed) {
+                    window.location.reload();
+                  }
+                }}
+                className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-noto transition-colors duration-200"
+              >
+                처음으로
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Card Display Section */}
       {cards.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
-          {cards.map((card) => (
-            <div key={card.id} className="relative">
-              <div
-                onClick={() => onCardFlip && onCardFlip(card.id)}
-                className="w-[200px] h-[300px] rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 transform-gpu shadow-lg"
-                style={{
-                  background: card.flipped ? '#ffffff' : `linear-gradient(135deg, ${card.color}, ${adjustBrightness(card.color, -10)})`
-                }}
-              >
-                {card.flipped ? (
-                  <div className="w-full h-full rounded-2xl overflow-hidden">
-                    {card.imageUrl ? (
-                      <img
-                        src={card.imageUrl}
-                        className="w-full h-full object-cover rounded-2xl"
-                        alt="Story card"
-                        onError={(e) => {
-                          console.error('Image failed to load:', card.imageUrl);
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-gray-400">
-                        <div className="text-center">
-                          <div className="text-2xl mb-2">❌</div>
-                          <div className="text-xs font-noto">이미지 없음</div>
+        <div className="mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 justify-items-center">
+            {cards.map((card) => (
+              <div key={card.id} className="relative">
+                <div
+                  onClick={() => onCardFlip && onCardFlip(card.id)}
+                  className="w-[200px] h-[300px] rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 transform-gpu shadow-lg"
+                  style={{
+                    background: card.flipped ? '#ffffff' : `linear-gradient(135deg, ${card.color}, ${adjustBrightness(card.color, -10)})`
+                  }}
+                >
+                  {card.flipped ? (
+                    <div className="w-full h-full rounded-2xl overflow-hidden">
+                      {card.imageUrl ? (
+                        <img
+                          src={card.imageUrl}
+                          className="w-full h-full object-cover rounded-2xl"
+                          alt="Story card"
+                          onError={(e) => {
+                            console.error('Image failed to load:', card.imageUrl);
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <div className="text-center">
+                            <div className="text-2xl mb-2">❌</div>
+                            <div className="text-xs font-noto">이미지 없음</div>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center rounded-2xl">
-                    <div className="text-xs font-noto text-gray-700 opacity-70">클릭해서 뒤집기</div>
-                  </div>
-                )}
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center rounded-2xl">
+                      <div className="text-xs font-noto text-gray-700 opacity-70">클릭해서 뒤집기</div>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

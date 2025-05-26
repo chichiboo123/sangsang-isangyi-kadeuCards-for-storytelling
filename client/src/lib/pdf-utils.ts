@@ -21,11 +21,11 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     pdf.setFont('helvetica', 'normal');
     
     pdf.setFontSize(20);
-    pdf.text('Imagination Beyond Cards - My Story', 105, 20, { align: 'center' });
+    pdf.text('상상 이상의 카드 - 나만의 이야기', 105, 20, { align: 'center' });
     
     // Add date
     pdf.setFontSize(12);
-    pdf.text(`Created: ${new Date().toLocaleDateString('en-US')}`, 105, 30, { align: 'center' });
+    pdf.text(`작성일: ${new Date().toLocaleDateString('ko-KR')}`, 105, 30, { align: 'center' });
 
     let yPosition = 50;
 
@@ -33,11 +33,11 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     if (flippedCards.length > 0) {
       pdf.setFontSize(16);
       pdf.setFont('NotoSansKR', 'normal');
-      pdf.text('Selected Cards:', 20, yPosition);
+      pdf.text('뽑은 카드들:', 20, yPosition);
       yPosition += 10;
 
       pdf.setFontSize(12);
-      pdf.text(`Total ${flippedCards.length} cards selected.`, 20, yPosition);
+      pdf.text(`총 ${flippedCards.length}장의 카드를 뽑았습니다.`, 20, yPosition);
       yPosition += 20;
 
       // Add card images if available
@@ -85,7 +85,7 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
     // Add story
     pdf.setFontSize(16);
     pdf.setFont('NotoSansKR', 'normal');
-    pdf.text('My Story:', 20, yPosition);
+    pdf.text('내가 쓴 이야기:', 20, yPosition);
     yPosition += 10;
 
     pdf.setFontSize(12);
@@ -107,10 +107,10 @@ export async function generatePDF(storyText: string, flippedCards: CardData[]): 
       pdf.setPage(i);
       pdf.setFontSize(10);
       pdf.setFont('NotoSansKR', 'normal');
-      pdf.text('created by. Educational Musical Dream Teacher', 105, 285, { align: 'center' });
+      pdf.text('created by. 교육뮤지컬 꿈꾸는 치수쌤', 105, 285, { align: 'center' });
     }
 
-    pdf.save(`imagination-cards_${new Date().toLocaleDateString('en-US').replace(/\//g, '-')}.pdf`);
+    pdf.save(`상상이상의카드_${new Date().toLocaleDateString('ko-KR').replace(/\./g, '-')}.pdf`);
   } catch (error) {
     console.error('PDF 생성 중 오류 발생:', error);
     throw new Error('PDF 생성 중 오류가 발생했습니다.');
