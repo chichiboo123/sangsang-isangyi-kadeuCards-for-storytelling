@@ -29,14 +29,11 @@ export default function Home() {
           <div className="text-2xl">⭐</div>
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-do-hyeon text-white drop-shadow-lg mb-2">
+        <h1 className="text-4xl md:text-6xl font-do-hyeon text-gray-800 drop-shadow-lg mb-2">
           상상 이상의 카드
         </h1>
-        <p className="text-xl md:text-2xl font-do-hyeon text-white/90 drop-shadow-md">
+        <p className="text-xl md:text-2xl font-do-hyeon text-gray-700 drop-shadow-md">
           Cards for Storytelling
-        </p>
-        <p className="text-lg font-noto text-white/80 mt-2">
-          어린왕자 테마 기반 이야기 창작 랜덤카드 생성기
         </p>
       </header>
 

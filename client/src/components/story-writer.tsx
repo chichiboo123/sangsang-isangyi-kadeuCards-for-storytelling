@@ -77,7 +77,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
   return (
     <section className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-8 mb-8">
       <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-6 text-center">
-        ✏️ 이야기 작성하기
+        이야기 만들기
       </h2>
       
       <div className="mb-6">
@@ -92,7 +92,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
       </div>
 
       {/* Download Buttons */}
-      <div className="flex flex-col md:flex-row gap-4 justify-center">
+      <div className="flex flex-col md:flex-row gap-4 justify-center mb-4">
         <Button
           onClick={handleDownloadTxt}
           className="bg-gradient-to-r from-pastel-green to-pastel-yellow hover:from-pastel-yellow hover:to-pastel-green text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
@@ -114,6 +114,16 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
               🖼️ PDF 다운로드
             </>
           )}
+        </Button>
+      </div>
+
+      {/* Go to Top Button */}
+      <div className="flex justify-center">
+        <Button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="bg-gradient-to-r from-pastel-sky to-pastel-purple hover:from-pastel-purple hover:to-pastel-sky text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
+        >
+          처음으로
         </Button>
       </div>
 

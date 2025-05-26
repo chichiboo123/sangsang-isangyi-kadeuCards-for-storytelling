@@ -20,9 +20,9 @@ interface CardGeneratorProps {
 }
 
 export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) {
-  const [cardCount, setCardCount] = useState(6);
+  const [cardCount, setCardCount] = useState('');
   const [useRealPhotos, setUseRealPhotos] = useState(true);
-  const [useIllustrations, setUseIllustrations] = useState(false);
+  const [useIllustrations, setUseIllustrations] = useState(true);
   const [cards, setCards] = useState<CardData[]>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
   const [loadingCards, setLoadingCards] = useState<Set<number>>(new Set());
@@ -39,7 +39,8 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
   }, [cards, onCardsGenerated]);
 
   const generateCards = () => {
-    if (cardCount < 1 || cardCount > 30) {
+    const count = parseInt(cardCount);
+    if (!cardCount || count < 1 || count > 30) {
       toast({
         title: "오류",
         description: "카드 개수는 1-30 사이로 입력해주세요.",
@@ -51,7 +52,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
     const shuffledColors = getShuffledPastelColors();
     const newCards: CardData[] = [];
     
-    for (let i = 0; i < cardCount; i++) {
+    for (let i = 0; i < count; i++) {
       newCards.push({
         id: i,
         color: shuffledColors[i % shuffledColors.length],
@@ -70,11 +71,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
     return `https://picsum.photos/200/300?random=${randomId}&t=${Date.now()}`;
   };
 
-  const getIllustrationImage = (): string => {
-    // For now, using grayscale Picsum images as illustration placeholders
-    const randomId = Math.floor(Math.random() * 100);
-    return `https://picsum.photos/200/300?random=illustration${randomId}&grayscale&t=${Date.now()}`;
-  };
+
 
   const getRandomImage = async (): Promise<string> => {
     if (!useRealPhotos && !useIllustrations) {
@@ -94,8 +91,8 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
   const flipCard = async (cardId: number) => {
     if (flippedCards.has(cardId)) return;
 
-    setLoadingCards(prev => new Set([...prev, cardId]));
-    setFlippedCards(prev => new Set([...prev, cardId]));
+    setLoadingCards(prev => new Set(Array.from(prev).concat([cardId])));
+    setFlippedCards(prev => new Set(Array.from(prev).concat([cardId])));
 
     try {
       const imageUrl = await getRandomImage();
@@ -124,9 +121,9 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
       );
     } finally {
       setLoadingCards(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(cardId);
-        return newSet;
+        const newArray = Array.from(prev);
+        const filtered = newArray.filter(id => id !== cardId);
+        return new Set(filtered);
       });
     }
   };
@@ -146,34 +143,39 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
       {/* Card Generator Section */}
       <section className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-8 mb-8">
         <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-4">🔢 카드 만들기</h2>
+          <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-4">카드 만들기</h2>
           
-          {/* Card Count Input */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
+          {/* Card Count Input Label */}
+          <div className="mb-4">
             <Label htmlFor="cardCount" className="text-lg font-noto font-medium text-gray-700">
-              카드 개수 (1-30):
+              카드 개수 입력
             </Label>
+          </div>
+          
+          {/* Card Count Input and Button */}
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
             <Input
               type="number"
               id="cardCount"
               min="1"
               max="30"
               value={cardCount}
-              onChange={(e) => setCardCount(parseInt(e.target.value) || 1)}
-              className="w-20 text-center font-noto font-medium text-lg border-2 border-purple-200 focus:border-blue-300"
+              placeholder="1-30"
+              onChange={(e) => setCardCount(e.target.value)}
+              className="w-24 text-center font-noto font-medium text-lg border-2 border-purple-200 focus:border-blue-300"
             />
             <Button
               onClick={generateCards}
               className="bg-gradient-to-r from-pastel-green to-pastel-sky hover:from-pastel-sky hover:to-pastel-green text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
             >
-              ✨ 카드 만들기
+              카드 만들기
             </Button>
           </div>
 
           {/* Image Type Selection */}
           <Card className="bg-pastel-yellow/30 border-none">
             <CardContent className="p-4">
-              <h3 className="text-lg font-noto font-semibold text-gray-800 mb-3">🎨 이미지 옵션 선택</h3>
+              <h3 className="text-lg font-noto font-semibold text-gray-800 mb-3">이미지 출력 옵션</h3>
               <div className="flex flex-wrap justify-center gap-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -187,7 +189,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
                     className="w-5 h-5"
                   />
                   <Label htmlFor="realPhotos" className="font-noto font-medium text-gray-700 cursor-pointer">
-                    📷 실물사진
+                    실물사진
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -202,7 +204,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
                     className="w-5 h-5"
                   />
                   <Label htmlFor="illustrations" className="font-noto font-medium text-gray-700 cursor-pointer">
-                    🎨 일러스트
+                    일러스트
                   </Label>
                 </div>
               </div>
