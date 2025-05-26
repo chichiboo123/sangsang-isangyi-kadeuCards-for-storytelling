@@ -92,7 +92,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
           />
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={handleDownloadTxt}
             disabled={!storyText.trim()}
@@ -105,6 +105,18 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
             `}
           >
             TXT 다운로드
+          </button>
+          
+          <button
+            onClick={() => {
+              const confirmed = window.confirm("모든 내용이 사라집니다. 처음 화면으로 이동하시겠습니까?");
+              if (confirmed) {
+                window.location.reload();
+              }
+            }}
+            className="px-6 py-3 rounded-lg font-noto bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          >
+            처음으로
           </button>
         </div>
       </div>
