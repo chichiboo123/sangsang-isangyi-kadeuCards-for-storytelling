@@ -41,11 +41,6 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
   const generateCards = () => {
     const count = parseInt(cardCount);
     if (!cardCount || count < 1 || count > 30) {
-      toast({
-        title: "오류",
-        description: "카드 개수는 1-30 사이로 입력해주세요.",
-        variant: "destructive"
-      });
       return;
     }
 
@@ -151,14 +146,7 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
       {/* Card Generator Section */}
       <section className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl p-6 md:p-8 mb-8">
         <div className="text-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-4">카드 만들기</h2>
-          
-          {/* Card Count Input Label */}
-          <div className="mb-4">
-            <Label htmlFor="cardCount" className="text-lg font-noto font-medium text-gray-700">
-              카드 개수 입력
-            </Label>
-          </div>
+          <h2 className="text-2xl md:text-3xl font-do-hyeon text-gray-800 mb-4">카드 개수 입력</h2>
           
           {/* Card Count Input and Button */}
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
@@ -222,22 +210,26 @@ export default function CardGenerator({ onCardsGenerated }: CardGeneratorProps) 
       </section>
 
       {/* Cards Container */}
-      <section className="mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-          {cards.map((card) => (
-            <StoryCard
-              key={card.id}
-              id={card.id}
-              backgroundColor={card.color}
-              emoji={emojis[card.id % emojis.length]}
-              onFlip={flipCard}
-              imageUrl={card.imageUrl}
-              isFlipped={card.flipped}
-              isLoading={loadingCards.has(card.id)}
-            />
-          ))}
-        </div>
-      </section>
+      {cards.length > 0 && (
+        <section className="mb-8">
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-items-center">
+              {cards.map((card) => (
+                <StoryCard
+                  key={card.id}
+                  id={card.id}
+                  backgroundColor={card.color}
+                  emoji={emojis[card.id % emojis.length]}
+                  onFlip={flipCard}
+                  imageUrl={card.imageUrl}
+                  isFlipped={card.flipped}
+                  isLoading={loadingCards.has(card.id)}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }

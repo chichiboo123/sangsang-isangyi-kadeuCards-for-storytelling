@@ -40,7 +40,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="container mx-auto px-4 max-w-6xl">
         <CardGenerator onCardsGenerated={handleCardsGenerated} />
-        <StoryWriter flippedCards={flippedCards} />
+        {flippedCards.length > 0 && <StoryWriter flippedCards={flippedCards} />}
       </main>
 
       {/* Footer */}

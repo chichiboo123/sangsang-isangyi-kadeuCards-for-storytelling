@@ -117,8 +117,8 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
         </Button>
       </div>
 
-      {/* Go to Top Button */}
-      <div className="flex justify-center">
+      {/* Go to Top Button - Outside the story section */}
+      <div className="flex justify-center mt-6">
         <Button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="bg-gradient-to-r from-pastel-sky to-pastel-purple hover:from-pastel-purple hover:to-pastel-sky text-gray-800 font-noto font-bold py-3 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-200"
@@ -126,14 +126,6 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
           처음으로
         </Button>
       </div>
-
-      {flippedCards.length > 0 && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 font-noto">
-            현재 {flippedCards.length}장의 카드가 PDF에 포함됩니다.
-          </p>
-        </div>
-      )}
     </section>
   );
 }
