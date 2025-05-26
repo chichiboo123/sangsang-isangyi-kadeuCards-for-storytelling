@@ -1,24 +1,11 @@
 export const pastelColors = [
-  '#FFE4E1', // Misty Rose
-  '#E6E6FA', // Lavender
-  '#F0F8FF', // Alice Blue
-  '#F5FFFA', // Mint Cream
-  '#FFF8DC', // Cornsilk
-  '#FFEFD5', // Papaya Whip
-  '#FFE4CD', // Bisque
-  '#E0FFFF', // Light Cyan
-  '#F0FFFF', // Azure
-  '#F5F5DC', // Beige
-  '#FDF5E6', // Old Lace
-  '#FAF0E6', // Linen
-  '#FFF5EE', // Seashell
-  '#F8F8FF', // Ghost White
-  '#FFFACD', // Lemon Chiffon
-  '#FAFAD2', // Light Goldenrod Yellow
-  '#FFE4B5', // Moccasin
-  '#FFDEAD', // Navajo White
-  '#FFE4C4', // Bisque
-  '#FFEBCD', // Blanched Almond
+  '#FDE2E4', '#FAD2CF', '#F2CC8F', '#F4F3EE', '#E3D5CA', '#D6EAF8',
+  '#B5EAD7', '#C7CEEA', '#FFF5BA', '#FFDFBA', '#FFE5E5', '#E5F3FF',
+  '#E5FFE5', '#FFF5E5', '#F5E5FF', '#E5FFFF', '#FFFEE5', '#FFE5F5',
+  '#E5E5FF', '#F5FFE5', '#FFE5D5', '#D5E5FF', '#E5D5FF', '#D5FFE5',
+  '#FFE5C5', '#C5E5FF', '#E5C5FF', '#C5FFE5', '#FFC5E5', '#E5FFC5',
+  '#DAD7FE', '#E0F7FA', '#F1F8E9', '#FCE4EC', '#FFF3E0', '#F3E5F5',
+  '#FFECB3', '#E8F5E8', '#FFF8E1', '#F9FBE7', '#E1F5FE', '#E8EAF6'
 ];
 
 export function getShuffledPastelColors(): string[] {

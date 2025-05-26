@@ -2,6 +2,14 @@ import { useState } from 'react';
 import CardGenerator from '@/components/card-generator';
 import StoryWriter from '@/components/story-writer';
 
+function adjustBrightness(color: string, amount: number): string {
+  const hex = color.replace('#', '');
+  const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+  const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+  const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
 interface CardData {
   id: number;
   color: string;
@@ -10,10 +18,38 @@ interface CardData {
 }
 
 export default function Home() {
-  const [flippedCards, setFlippedCards] = useState<CardData[]>([]);
+  const [cards, setCards] = useState<CardData[]>([]);
+  const [showStorySection, setShowStorySection] = useState(false);
+  const flippedCards = cards.filter(card => card.flipped);
 
-  const handleCardsGenerated = (cards: CardData[]) => {
-    setFlippedCards(cards);
+  const handleCardFlip = (id: number) => {
+    setCards(prevCards =>
+      prevCards.map(card =>
+        card.id === id ? { ...card, flipped: true } : card
+      )
+    );
+  };
+
+  const handleCardsGenerated = (newCards: CardData[]) => {
+    setCards(newCards);
+    setShowStorySection(true);
+    
+    // Scroll to story section after a brief delay
+    setTimeout(() => {
+      const storySection = document.getElementById('story-section');
+      if (storySection) {
+        storySection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 300);
+  };
+
+  const resetCards = () => {
+    const confirmed = window.confirm("모든 내용이 사라집니다. 처음 화면으로 이동하시겠습니까?");
+    if (confirmed) {
+      setCards([]);
+      setShowStorySection(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -40,7 +76,71 @@ export default function Home() {
       {/* Main Content */}
       <main className="container mx-auto px-4 max-w-6xl">
         <CardGenerator onCardsGenerated={handleCardsGenerated} />
-        {flippedCards.length > 0 && <StoryWriter flippedCards={flippedCards} />}
+        
+        {/* Card Display Section */}
+        {cards.length > 0 && (
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-do-hyeon text-gray-800">생성된 카드들</h2>
+              <button
+                onClick={resetCards}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-noto transition-colors duration-200"
+              >
+                처음으로
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
+              {cards.map((card) => (
+                <div key={card.id} className="relative">
+                  <div
+                    onClick={() => handleCardFlip(card.id)}
+                    className={`
+                      w-full aspect-[3/4] rounded-2xl cursor-pointer transition-all duration-300 hover:scale-105 transform-gpu
+                      ${card.flipped ? 'rotate-y-180' : ''}
+                    `}
+                    style={{
+                      background: card.flipped ? '#ffffff' : `linear-gradient(135deg, ${card.color}, ${adjustBrightness(card.color, -10)})`
+                    }}
+                  >
+                    {card.flipped ? (
+                      <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg">
+                        {card.imageUrl ? (
+                          <img
+                            src={card.imageUrl}
+                            className="w-full h-full object-cover"
+                            alt="Story card"
+                            onError={(e) => {
+                              console.error('Image failed to load:', card.imageUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <div className="text-center">
+                              <div className="text-2xl mb-2">❌</div>
+                              <div className="text-xs font-noto">이미지 없음</div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center rounded-2xl">
+                        <div className="text-xs font-noto text-gray-700 opacity-70">클릭해서 뒤집기</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showStorySection && (
+          <div id="story-section">
+            <StoryWriter flippedCards={flippedCards} />
+          </div>
+        )}
       </main>
 
       {/* Footer */}
