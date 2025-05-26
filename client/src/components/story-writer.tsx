@@ -127,13 +127,7 @@ export default function StoryWriter({ flippedCards }: StoryWriterProps) {
         </Button>
       </div>
 
-      {flippedCards.length > 0 && (
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 font-noto">
-            현재 {flippedCards.length}장의 카드가 PDF에 포함됩니다.
-          </p>
-        </div>
-      )}
+
     </section>
   );
 }
