@@ -124,7 +124,7 @@ export default function StoryWriter({ flippedCards, onRemoveCard }: StoryWriterP
             value={storyText}
             onChange={(e) => setStoryText(e.target.value)}
             placeholder="카드에서 영감을 받아 자유롭게 이야기를 써보세요..."
-            className="min-h-[200px] p-4 text-base font-noto resize-none border-2 border-gray-200 focus:border-purple-500 rounded-lg"
+            className="min-h-[200px] p-4 text-lg font-noto resize-none border-2 border-gray-200 focus:border-purple-500 rounded-lg leading-relaxed"
           />
         </div>
 

@@ -142,12 +142,26 @@ export async function downloadJpgScreenshot(): Promise<void> {
   const buttons = storyElement.querySelectorAll('.download-buttons') as NodeListOf<HTMLElement>;
   buttons.forEach(btn => btn.style.display = 'none');
 
+  // 텍스트 영역의 원래 높이 저장
+  const textarea = storyElement.querySelector('textarea') as HTMLTextAreaElement;
+  const originalHeight = textarea?.style.height;
+  
   try {
+    // 텍스트 영역의 높이를 내용에 맞게 자동 조정
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
     const canvas = await html2canvas(storyElement, {
       backgroundColor: '#ffffff',
       scale: 2,
       useCORS: true,
-      allowTaint: true
+      allowTaint: true,
+      width: storyElement.scrollWidth,
+      height: storyElement.scrollHeight,
+      scrollX: 0,
+      scrollY: 0
     });
 
     // 이미지 다운로드
@@ -156,7 +170,10 @@ export async function downloadJpgScreenshot(): Promise<void> {
     link.href = canvas.toDataURL('image/jpeg', 0.9);
     link.click();
   } finally {
-    // 버튼들 다시 보이기
+    // 원래 상태로 복원
     buttons.forEach(btn => btn.style.display = '');
+    if (textarea) {
+      textarea.style.height = originalHeight || '';
+    }
   }
 }
