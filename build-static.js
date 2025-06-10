@@ -3,6 +3,7 @@
 import { build } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,7 +26,7 @@ const config = {
       input: path.resolve(__dirname, "client/index.html"),
     },
   },
-  base: "./",
+  base: "/sangsang-isangyi-kadeuCards-for-storytelling/",
   define: {
     'process.env.NODE_ENV': '"production"',
   },
@@ -34,6 +35,15 @@ const config = {
 try {
   console.log('Building static site for GitHub Pages...');
   await build(config);
+  
+  // Copy 404.html for SPA routing support
+  const sourceFile = path.resolve(__dirname, 'client/public/404.html');
+  const destFile = path.resolve(__dirname, 'dist/404.html');
+  if (fs.existsSync(sourceFile)) {
+    fs.copyFileSync(sourceFile, destFile);
+    console.log('Copied 404.html for SPA routing support');
+  }
+  
   console.log('Build completed successfully!');
 } catch (error) {
   console.error('Build failed:', error);
