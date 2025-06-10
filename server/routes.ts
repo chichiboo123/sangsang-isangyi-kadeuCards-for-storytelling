@@ -8,6 +8,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: "ok", message: "Cards for Storytelling API is running" });
   });
 
+  // Add SPA fallback route for root path
+  app.get("/", (req, res, next) => {
+    // Let Vite middleware handle this
+    next();
+  });
+
   // Get random image proxy endpoint (to handle CORS issues)
   app.get("/api/images/picsum/:id", async (req, res) => {
     try {
