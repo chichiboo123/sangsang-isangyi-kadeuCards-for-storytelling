@@ -232,7 +232,25 @@ const router = createRouter({
 
 ### Wouter (as used in this project)
 
-Wouter automatically handles the base path when you set it in Vite config, no additional configuration needed.
+Wouter needs to be configured with the base path when deployed to a subdirectory:
+
+```jsx
+import { Switch, Route, Router } from "wouter";
+
+// Get the base path from Vite's environment
+const basePath = import.meta.env.BASE_URL || "/";
+
+function AppRouter() {
+  return (
+    <Router base={basePath}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  );
+}
+```
 
 ## Testing Your Fix
 
