@@ -25,7 +25,7 @@ const config = {
       input: path.resolve(__dirname, "client/index.html"),
     },
   },
-  base: "./",
+  base: "/sangsang-isangyi-kadeuCards-for-storytelling/",
   define: {
     'process.env.NODE_ENV': '"production"',
   },
