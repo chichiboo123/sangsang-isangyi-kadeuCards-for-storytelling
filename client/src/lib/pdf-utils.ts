@@ -142,15 +142,26 @@ export async function downloadJpgScreenshot(): Promise<void> {
   const buttons = storyElement.querySelectorAll('.download-buttons') as NodeListOf<HTMLElement>;
   buttons.forEach(btn => btn.style.display = 'none');
 
-  // 텍스트 영역의 원래 높이 저장
+  // textarea를 div로 대체하여 실제 보이는 텍스트 표현
   const textarea = storyElement.querySelector('textarea') as HTMLTextAreaElement;
-  const originalHeight = textarea?.style.height;
+  let replacementDiv: HTMLDivElement | null = null;
   
   try {
-    // 텍스트 영역의 높이를 내용에 맞게 자동 조정
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+    if (textarea && textarea.value.trim()) {
+      // 텍스트를 div로 대체
+      replacementDiv = document.createElement('div');
+      replacementDiv.className = textarea.className;
+      replacementDiv.style.cssText = getComputedStyle(textarea).cssText;
+      replacementDiv.style.height = 'auto';
+      replacementDiv.style.minHeight = '200px';
+      replacementDiv.style.whiteSpace = 'pre-wrap';
+      replacementDiv.style.wordWrap = 'break-word';
+      replacementDiv.style.overflow = 'visible';
+      replacementDiv.textContent = textarea.value;
+      
+      // textarea를 div로 교체
+      textarea.style.display = 'none';
+      textarea.parentNode?.insertBefore(replacementDiv, textarea);
     }
 
     const canvas = await html2canvas(storyElement, {
@@ -173,7 +184,10 @@ export async function downloadJpgScreenshot(): Promise<void> {
     // 원래 상태로 복원
     buttons.forEach(btn => btn.style.display = '');
     if (textarea) {
-      textarea.style.height = originalHeight || '';
+      textarea.style.display = '';
+    }
+    if (replacementDiv) {
+      replacementDiv.remove();
     }
   }
 }
